@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="only light">
 <title>Calcio Time. Who’s In?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f8f8f6;--ink:#1f2226;--blue:#4fa6e3;--deep:#ffffff;--org:#1f2226;--btn:#1f2226;--btnink:#ffffff;--errc:#7a1a05}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
 main{max-width:480px;margin:0 auto;padding:24px 16px 40px}
-h1{font-size:1.7rem;margin:0 0 6px;text-align:center;color:var(--ink);font-weight:800}
+h1{font-family:'Anton',Impact,'Arial Narrow Bold',sans-serif;font-size:2.2rem;line-height:1.05;margin:0 0 8px;text-align:center;color:var(--ink);font-weight:400;text-transform:uppercase;letter-spacing:.02em}
 .sub{color:var(--ink);margin:0 0 18px;text-align:center;font-weight:500}
 .card{background:var(--blue);color:var(--org);border:3px solid var(--ink);border-radius:18px;padding:16px;margin-bottom:14px}
 .count{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px}
@@ -19,7 +22,7 @@ h1{font-size:1.7rem;margin:0 0 6px;text-align:center;color:var(--ink);font-weigh
 .row{display:flex;gap:8px}
 input{flex:1;min-width:0;padding:12px;border:2px solid var(--org);border-radius:10px;background:var(--deep);color:var(--org);font-size:1rem;font-weight:600}
 input::placeholder{color:var(--org);opacity:.6;font-weight:500}
-button{padding:12px 18px;border:0;border-radius:10px;background:var(--btn);color:var(--btnink);font-weight:800;font-size:1rem;cursor:pointer}
+button{padding:12px 20px;border:0;border-radius:10px;background:var(--btn);color:var(--btnink);font-family:'Anton',Impact,'Arial Narrow Bold',sans-serif;font-weight:400;font-size:1.1rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
 .msg{margin:10px 0 0;font-size:.9rem;color:var(--org);font-weight:600}
 .msg.err{color:var(--errc)}
