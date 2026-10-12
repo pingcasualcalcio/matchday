@@ -7,52 +7,63 @@
 <title>Calcio Time. Who’s In?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bevan&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f8f8f6;--ink:#1f2226;--blue:#4fa6e3;--deep:#ffffff;--org:#1f2226;--btn:#1f2226;--btnink:#ffffff;--errc:#7a1a05}
+:root{--paper:#f3ead4;--page:#e6dcc2;--blue:#1f3fb5;--gold:#e8a33d;--ink:#231f1c;--disp:'Bevan',Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
-main{max-width:480px;margin:0 auto;padding:24px 16px 40px}
-h1{font-family:'Anton',Impact,'Arial Narrow Bold',sans-serif;font-size:2.2rem;line-height:1.05;margin:0 0 8px;text-align:center;color:var(--ink);font-weight:400;text-transform:uppercase;letter-spacing:.02em}
-.sub{color:var(--ink);margin:0 0 18px;text-align:center;font-weight:500}
-.card{background:var(--blue);color:var(--org);border:3px solid var(--ink);border-radius:18px;padding:16px;margin-bottom:14px}
-.count{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px}
-.bar{height:10px;background:var(--deep);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--btn);width:0;transition:width .3s}
+[hidden]{display:none!important}
+body{margin:0;background:var(--page);color:var(--blue);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.35}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.45;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .42 0 0 0 0 .28 0 0 0 1.4 -.45'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.tag{position:relative;width:calc(100% - 24px);max-width:440px;margin:18px auto;padding:30px 22px 26px 40px;background:var(--paper);border:2px solid var(--blue);outline:3px solid var(--blue);outline-offset:-12px;box-shadow:0 3px 10px rgba(60,40,10,.25)}
+.tag::before{content:"";position:absolute;left:20px;top:46px;bottom:22px;border-left:3px dashed var(--blue)}
+.hole{position:absolute;left:12px;top:14px;width:15px;height:15px;border-radius:50%;background:var(--page);box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.loz{background:repeating-linear-gradient(90deg,#1f3fb5 0 3px,#2d52cc 3px 4px);clip-path:polygon(0 50%,7% 0,93% 0,100% 50%,93% 100%,7% 100%);padding:20px 30px;text-align:center;margin:2px -4px 16px}
+h1{font:400 1.55rem/1.1 var(--disp);margin:0;color:var(--paper);text-transform:uppercase;letter-spacing:.02em}
+.sub{margin:0;text-align:center;font:400 1.05rem/1.3 var(--disp);text-transform:uppercase;letter-spacing:.04em}
+.sub span{display:block;font:700 .68rem system-ui,sans-serif;letter-spacing:.16em;margin-top:7px}
+.star{width:34px;height:34px;margin:14px auto 10px;background:var(--gold);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.roundel{width:104px;height:104px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:var(--gold);border:6px solid var(--ink);box-shadow:inset 0 0 0 4px var(--gold),inset 0 0 0 6px var(--ink)}
+.roundel b{font:400 1.7rem var(--disp);color:var(--blue)}
+.state{margin:8px 0 12px;text-align:center;font:400 .9rem var(--disp);text-transform:uppercase;letter-spacing:.08em}
+.bar{height:10px;border:2px solid var(--blue);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .3s}
 .row{display:flex;gap:8px}
-input{flex:1;min-width:0;padding:12px;border:2px solid var(--org);border-radius:10px;background:var(--deep);color:var(--org);font-size:1rem;font-weight:600}
-input::placeholder{color:var(--org);opacity:.6;font-weight:500}
-button{padding:12px 20px;border:0;border-radius:10px;background:var(--btn);color:var(--btnink);font-family:'Anton',Impact,'Arial Narrow Bold',sans-serif;font-weight:400;font-size:1.1rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-.msg{margin:10px 0 0;font-size:.9rem;color:var(--org);font-weight:600}
-.msg.err{color:var(--errc)}
-.banner{background:var(--btn);color:var(--btnink);border-radius:10px;padding:10px 12px;font-weight:800;margin-bottom:4px}
-ol{list-style:none;margin:0;padding:0}
-li{display:flex;gap:10px;padding:10px 12px;background:var(--deep);border:2px solid var(--ink);border-radius:10px;margin-bottom:6px;font-weight:700;font-size:1.05rem}
-li .n{width:24px;opacity:.7}
-li.empty{opacity:.6;font-style:italic;font-weight:500}
-.foot{font-family:'Anton',Impact,'Arial Narrow Bold',sans-serif;font-weight:400;font-size:1.3rem;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:var(--ink);margin:26px 0 0}
+input{flex:1;min-width:0;padding:11px 12px;border:2px solid var(--blue);border-radius:6px;background:transparent;color:var(--blue);font-size:1rem;font-weight:700}
+input::placeholder{color:var(--blue);opacity:.5;font-weight:500}
+button{padding:11px 18px;border:2px solid var(--blue);border-radius:6px;background:var(--blue);color:var(--paper);font:400 1rem var(--disp);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.msg{margin:8px 0 0;font-size:.85rem;font-weight:600;min-height:1.2em}
+.msg.err{color:#a4260a}
+.banner{background:var(--gold);border:2px solid var(--blue);border-radius:6px;padding:10px;text-align:center;font:400 .95rem var(--disp);margin-bottom:4px}
+ol{list-style:none;margin:14px 0 0;padding:0}
+li{display:flex;gap:10px;padding:9px 2px;border-bottom:2px dashed rgba(31,63,181,.45);font-weight:700;font-size:1.05rem}
+li .n{width:24px;opacity:.55}
+li.empty{opacity:.45;font-style:italic;font-weight:500}
+.foot{margin:26px 0 4px;text-align:center;font:400 1.15rem var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.tagline{margin:0;text-align:center;font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+.worn{filter:url(#rough)}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter></svg>
+<div class="tag"><div class="hole"></div>
 <main>
-  <h1>Calcio Time. Who’s In?</h1>
-  <p class="sub">First 10 names play.<br>Grab your spot before it’s gone!</p>
-  <div class="card">
-    <div class="count"><span id="count">0 / 10 spots</span><span id="state"></span></div>
-    <div class="bar"><i id="fill"></i></div>
+  <div class="loz worn"><h1>Calcio Time.<br>Who’s In?</h1></div>
+  <p class="sub">First 10 names play.<span>Grab your spot before it’s gone!</span></p>
+  <div class="star"></div>
+  <div class="roundel worn"><b id="count">0/10</b></div>
+  <p class="state" id="state"></p>
+  <div class="bar"><i id="fill"></i></div>
+  <div id="closed" class="banner" hidden>Registration is closed. 10 players are set!</div>
+  <div class="row" id="formRow">
+    <input id="name" type="text" maxlength="24" placeholder="Your name" autocomplete="name">
+    <button id="join">Join</button>
   </div>
-  <div class="card">
-    <div id="closed" class="banner" hidden>Registration is closed. 10 players are set!</div>
-    <div class="row" id="formRow">
-      <input id="name" type="text" maxlength="24" placeholder="Your name" autocomplete="name">
-      <button id="join">Join</button>
-    </div>
-    <p class="msg" id="msg"></p>
-  </div>
-  <div class="card"><ol id="list"></ol></div>
-  <p class="foot">Ci vediamo in campo.</p>
-</main>
+  <p class="msg" id="msg"></p>
+  <ol id="list"></ol>
+  <p class="foot worn">Ci vediamo in campo.</p>
+  <p class="tagline">Accept no excuses</p>
+</main></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -92,7 +103,7 @@ function render() {
     li.append(n, t); list.append(li);
   });
   const full = taken >= TOTAL;
-  $("count").textContent = taken + " / " + TOTAL + " spots";
+  $("count").textContent = taken + "/" + TOTAL;
   $("fill").style.width = (taken / TOTAL * 100) + "%";
   $("state").textContent = full ? "CLOSED" : (TOTAL - taken) + " left";
   $("closed").hidden = !full;
