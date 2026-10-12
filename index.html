@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5v5 Football Sign-up</title>
+<style>
+:root{--bg:#f4f7f2;--card:#fff;--ink:#14231a;--mute:#5f7266;--line:#dbe5dc;--acc:#1f9d55;--accink:#fff;--warn:#c2410c;--slot:#eef3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a13;--card:#17251c;--ink:#e8f2ea;--mute:#93a99a;--line:#27382d;--acc:#34c374;--accink:#07210f;--warn:#fb923c;--slot:#1c2d22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+main{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.count{display:flex;justify-content:space-between;font-weight:600;margin-bottom:10px}
+.bar{height:8px;background:var(--slot);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.row{display:flex;gap:8px}
+input{flex:1;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:1rem}
+button{padding:12px 16px;border:0;border-radius:10px;background:var(--acc);color:var(--accink);font-weight:600;font-size:1rem;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.msg{margin:10px 0 0;font-size:.9rem;color:var(--mute)}
+.msg.err{color:var(--warn)}
+.banner{background:var(--acc);color:var(--accink);border-radius:10px;padding:10px 12px;font-weight:600}
+ol{list-style:none;margin:0;padding:0}
+li{display:flex;gap:10px;padding:10px 12px;background:var(--slot);border-radius:10px;margin-bottom:6px}
+li .n{width:24px;color:var(--mute)}
+li.empty{color:var(--mute);font-style:italic}
+</style>
+</head>
+<body>
+<main>
+  <h1>⚽ 5v5 Football</h1>
+  <p class="sub">First 10 names play. Registration closes automatically.</p>
+  <div class="card">
+    <div class="count"><span id="count">0 / 10 spots</span><span id="state"></span></div>
+    <div class="bar"><i id="fill"></i></div>
+  </div>
+  <div class="card">
+    <div id="closed" class="banner" hidden>Registration is closed. 10 players are set!</div>
+    <div class="row" id="formRow">
+      <input id="name" type="text" maxlength="24" placeholder="Your name" autocomplete="name">
+      <button id="join">Join</button>
+    </div>
+    <p class="msg" id="msg"></p>
+  </div>
+  <div class="card"><ol id="list"></ol></div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase config for the Casual Calcio project
+const firebaseConfig = {
+  apiKey: "AIzaSyBiAiJSc713oV1ZO7eTHRNKfeLB4IKpNLc",
+  authDomain: "casual-calcio.firebaseapp.com",
+  projectId: "casual-calcio",
+  storageBucket: "casual-calcio.firebasestorage.app",
+  messagingSenderId: "304424883053",
+  appId: "1:304424883053:web:21c2a637605dbccf2e8064"
+};
+
+// 2) Each match gets its own list. Share a new link per match: yoursite.com/?m=oct-18
+const MATCH = (new URLSearchParams(location.search).get("m") || "default").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40) || "default";
+const TOTAL = 10;
+const ids = Array.from({length: TOTAL}, (_, i) => "s" + String(i + 1).padStart(2, "0"));
+
+const $ = id => document.getElementById(id);
+const setMsg = (t, err) => { $("msg").textContent = t || ""; $("msg").className = "msg" + (err ? " err" : ""); };
+const KEY = "joined:" + MATCH;
+let joined = false; try { joined = !!localStorage.getItem(KEY); } catch (e) {}
+
+let db, slots = {}, busy = false;
+try { db = getFirestore(initializeApp(firebaseConfig)); } catch (e) { setMsg("Setup incomplete: check the Firebase config.", true); }
+
+function render() {
+  const list = $("list"); list.textContent = "";
+  let taken = 0;
+  ids.forEach((id, i) => {
+    const li = document.createElement("li");
+    const n = document.createElement("span"); n.className = "n"; n.textContent = i + 1;
+    const t = document.createElement("span");
+    if (slots[id]) { taken++; t.textContent = slots[id]; } else { li.className = "empty"; t.textContent = "Open spot"; }
+    li.append(n, t); list.append(li);
+  });
+  const full = taken >= TOTAL;
+  $("count").textContent = taken + " / " + TOTAL + " spots";
+  $("fill").style.width = (taken / TOTAL * 100) + "%";
+  $("state").textContent = full ? "CLOSED" : (TOTAL - taken) + " left";
+  $("closed").hidden = !full;
+  $("formRow").hidden = full;
+  $("join").disabled = busy || joined;
+  $("name").disabled = joined;
+  if (joined && !full) setMsg("You're in! See you on the pitch.");
+}
+
+async function claim(name) {
+  for (const id of ids) {
+    if (slots[id]) continue;
+    try {
+      // Rules only allow creating a slot that doesn't exist yet, so two people can never share a spot.
+      await setDoc(doc(db, "matches", MATCH, "slots", id), { name, at: Date.now() });
+      return true;
+    } catch (e) {
+      if (e && e.code === "permission-denied") continue; // someone else got it first
+      throw e;
+    }
+  }
+  return false;
+}
+
+$("join").addEventListener("click", async () => {
+  const name = $("name").value.trim();
+  if (!name) { setMsg("Please type your name.", true); return; }
+  busy = true; render(); setMsg("Saving your spot…");
+  try {
+    if (await claim(name)) {
+      joined = true; try { localStorage.setItem(KEY, "1"); } catch (e) {}
+      setMsg("You're in! See you on the pitch.");
+    } else setMsg("Sorry, all 10 spots just filled up.", true);
+  } catch (e) { setMsg("Could not save your name. Check your connection and try again.", true); }
+  busy = false; render();
+});
+$("name").addEventListener("keydown", e => { if (e.key === "Enter") $("join").click(); });
+
+render();
+if (db) {
+  onSnapshot(collection(db, "matches", MATCH, "slots"), snap => {
+    const next = {};
+    snap.forEach(d => { next[d.id] = d.data().name; });
+    slots = next; render();
+  }, () => setMsg("Could not load the list. Check the Firebase setup.", true));
+}
+</script>
+</body>
+</html>
