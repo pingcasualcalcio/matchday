@@ -3,36 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
 <title>Calcio Time. Who’s In?</title>
 <style>
-:root{--bg:#f4f7f2;--card:#fff;--ink:#14231a;--mute:#5f7266;--line:#dbe5dc;--acc:#1f9d55;--accink:#fff;--warn:#c2410c;--slot:#eef3ee}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1a13;--card:#17251c;--ink:#e8f2ea;--mute:#93a99a;--line:#27382d;--acc:#34c374;--accink:#07210f;--warn:#fb923c;--slot:#1c2d22}}
+:root{--bg:#f8f8f6;--ink:#1f2226;--blue:#4fa6e3;--deep:#ffffff;--org:#1f2226;--btn:#1f2226;--btnink:#ffffff;--errc:#7a1a05}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
-main{max-width:480px;margin:0 auto;padding:20px 16px 40px}
-h1{font-size:1.5rem;margin:0 0 4px}
-.sub{color:var(--mute);margin:0 0 16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
-.count{display:flex;justify-content:space-between;font-weight:600;margin-bottom:10px}
-.bar{height:8px;background:var(--slot);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+main{max-width:480px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:1.7rem;margin:0 0 6px;text-align:center;color:var(--ink);font-weight:800}
+.sub{color:var(--ink);margin:0 0 18px;text-align:center;font-weight:500}
+.card{background:var(--blue);color:var(--org);border:3px solid var(--ink);border-radius:18px;padding:16px;margin-bottom:14px}
+.count{display:flex;justify-content:space-between;font-weight:700;margin-bottom:10px}
+.bar{height:10px;background:var(--deep);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--btn);width:0;transition:width .3s}
 .row{display:flex;gap:8px}
-input{flex:1;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:1rem}
-button{padding:12px 16px;border:0;border-radius:10px;background:var(--acc);color:var(--accink);font-weight:600;font-size:1rem;cursor:pointer}
+input{flex:1;min-width:0;padding:12px;border:2px solid var(--org);border-radius:10px;background:var(--deep);color:var(--org);font-size:1rem;font-weight:600}
+input::placeholder{color:var(--org);opacity:.6;font-weight:500}
+button{padding:12px 18px;border:0;border-radius:10px;background:var(--btn);color:var(--btnink);font-weight:800;font-size:1rem;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
-.msg{margin:10px 0 0;font-size:.9rem;color:var(--mute)}
-.msg.err{color:var(--warn)}
-.banner{background:var(--acc);color:var(--accink);border-radius:10px;padding:10px 12px;font-weight:600}
+.msg{margin:10px 0 0;font-size:.9rem;color:var(--org);font-weight:600}
+.msg.err{color:var(--errc)}
+.banner{background:var(--btn);color:var(--btnink);border-radius:10px;padding:10px 12px;font-weight:800;margin-bottom:4px}
 ol{list-style:none;margin:0;padding:0}
-li{display:flex;gap:10px;padding:10px 12px;background:var(--slot);border-radius:10px;margin-bottom:6px}
-li .n{width:24px;color:var(--mute)}
-li.empty{color:var(--mute);font-style:italic}
+li{display:flex;gap:10px;padding:10px 12px;background:var(--deep);border:2px solid var(--ink);border-radius:10px;margin-bottom:6px;font-weight:700;font-size:1.05rem}
+li .n{width:24px;opacity:.7}
+li.empty{opacity:.6;font-style:italic;font-weight:500}
 </style>
 </head>
 <body>
 <main>
   <h1>Calcio Time. Who’s In?</h1>
-  <p class="sub">First 10 names play. Grab your spot before it’s gone!</p>
+  <p class="sub">First 10 names play.<br>Grab your spot before it’s gone!</p>
   <div class="card">
     <div class="count"><span id="count">0 / 10 spots</span><span id="state"></span></div>
     <div class="bar"><i id="fill"></i></div>
